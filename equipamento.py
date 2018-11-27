@@ -1,6 +1,44 @@
 #Ordenacao: https://www.pyimagesearch.com/2015/04/20/sorting-contours-using-python-and-opencv/
+from __future__ import print_function
+import pyzbar.pyzbar as pyzbar
 import cv2
 import numpy as np
+
+def decode(im) : 
+  # Find barcodes and QR codes
+  decodedObjects = pyzbar.decode(im)
+ 
+  # Print results
+  for obj in decodedObjects:
+    #print('Type : ', obj.type)
+    #print('Data : ', obj.data,'\n')
+    return (str(obj.data))
+ 
+ 
+# Display barcode and QR code location  
+def display(im, decodedObjects):
+ 
+  # Loop over all decoded objects
+  for decodedObject in decodedObjects: 
+    points = decodedObject.polygon
+ 
+    # If the points do not form a quad, find convex hull
+    if len(points) > 4 : 
+      hull = cv2.convexHull(np.array([point for point in points], dtype=np.float32))
+      hull = list(map(tuple, np.squeeze(hull)))
+    else : 
+      hull = points;
+     
+    # Number of points in the convex hull
+    n = len(hull)
+ 
+    # Draw the convext hull
+    for j in range(0,n):
+      cv2.line(im, hull[j], hull[ (j+1) % n], (255,0,0), 3)
+ 
+  # Display results 
+  cv2.imshow("Results", im);
+  cv2.waitKey(0);
 
 def nothing(x):
     pass
@@ -144,25 +182,29 @@ def detectarAgulhaManometro(frame):
     threshold = cv2.inRange(hsv, lower_collor, upper_collor)
 
     #Cria kernel para usar na erosao e dilatacao
-    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
 
     #remove os ruídos da imagem usando a erosao
     threshold = cv2.erode (threshold, kernel, iterations = 1)
 
     #agrupa a imagem usando dilatacao
-    threshold = cv2.dilate(threshold, kernel, iterations = 6)
+    threshold = cv2.dilate(threshold, kernel, iterations = 7)
 
-    (_, cnts, _) = cv2.findContours(threshold.copy(), mode = cv2.RETR_EXTERNAL,
+    (_, cnts, _) = cv2.findContours(threshold.copy(), mode = cv2.RETR_TREE,
                                     method = cv2.CHAIN_APPROX_SIMPLE)
 
-    cv2.imshow('threshold', threshold)
+    cnt = sorted(cnts, key = cv2.contourArea, reverse = True)[0]
 
+    #cv2.drawContours(frame,cnts,-1,(0, 0, 255),2)
+    #cv2.drawContours(frame,cnt,-1,(0, 255, 0),2)
 
-def processarManometro():
-    
-    img = cv2.imread('equipamento_1.jpg')
-    im = cv2.imread('equipamento_1.jpg')
+    rect = np.int32(cv2.boxPoints(cv2.minAreaRect(cnt)))
 
+    cv2.imshow('threshold', frame)
+
+    return rect
+
+def detectarManometro(img, im):
     img = cv2.medianBlur(img,5)
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 
@@ -178,13 +220,42 @@ def processarManometro():
     cv2.circle(circle_img,(circle[0],circle[1]),circle[2]-40,1,-1)
 
     masked_data = cv2.bitwise_and(im, im, mask=circle_img)
-    #masked_data = cv2.cvtColor(masked_data,cv2.COLOR_BGR2GRAY)
 
-    detectarAgulhaManometro(masked_data)
+    return masked_data
+
+
+def processarManometro():
     
-    cv2.imshow('Manometro', masked_data)
+    img = cv2.imread('equipamento_1.jpg')
+    im = cv2.imread('equipamento_1.jpg')
+
     
+    masked_data = detectarManometro(img, im)
+    agulha = detectarAgulhaManometro(masked_data)
+
+    cv2.drawContours(img, [agulha], -11, (255, 0, 0), 2)
+    
+    cv2.imshow('Manometro', img)
+
+def processarQrCode(nome):
+    im = cv2.imread(nome)
+    decodedObjects = decode(im)
+    return decodedObjects 
+    
+
 if __name__ == '__main__':
-    processarManometro()    
 
-    
+    qt= 1
+    while 1:
+        try:
+            nome = 'qrcode_'
+            nome += str(qt)
+            nome += '.jpg'
+
+            dado = processarQrCode(nome)
+
+
+            qt = qt + 1
+        except:
+            print ('acabou')
+            break
