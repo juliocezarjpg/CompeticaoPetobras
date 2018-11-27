@@ -43,9 +43,22 @@ def display(im, decodedObjects):
    
 # Main 
 if __name__ == '__main__':
- 
+
+  qt = 1
+  while 1:
   # Read image
-  im = cv2.imread('zbar-test.jpg')
- 
-  decodedObjects = decode(im)
-  display(im, decodedObjects)
+    try:
+      nome = 'qrcode_'
+      nome += str(qt)
+      nome += '.jpg'
+
+      print (nome)
+      im = cv2.imread(nome)
+      qt = qt + 1
+
+      decodedObjects = decode(im)
+      #display(im, decodedObjects)
+    except:
+      print ('acabou')
+      break
+  
