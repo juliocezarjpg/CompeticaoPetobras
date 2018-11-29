@@ -6,8 +6,10 @@ def nothing(x):
 
 calibrar = 1
 
-frame = cv2.imread('equipamento_1.jpg')
-im = cv2.imread('equipamento_1.jpg')
+imagem = 'equipamento1_0g.jpeg'
+
+frame = cv2.imread(imagem)
+im = cv2.imread(imagem)
 
 a_read = open ('values_manometro.txt', 'r')
 texto = a_read.readline()
@@ -56,13 +58,13 @@ while 1:
     threshold = cv2.inRange(hsv, lower_collor, upper_collor)
 
     #Cria kernel para usar na erosao e dilatacao
-    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2, 2))
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
 
     #remove os ruídos da imagem usando a erosao
     threshold = cv2.erode (threshold, kernel, iterations = 1)
 
     #agrupa a imagem usando dilatacao
-    threshold = cv2.dilate(threshold, kernel, iterations = 6)
+    threshold = cv2.dilate(threshold, kernel, iterations = 7)
 
     (_, cnts, _) = cv2.findContours(threshold.copy(), mode = cv2.RETR_EXTERNAL,
                                     method = cv2.CHAIN_APPROX_SIMPLE)
@@ -73,7 +75,7 @@ while 1:
 
     cv2.imshow('Threshold', threshold)
     cv2.imshow('Painel', im)
-    im = cv2.imread('equipamento_1.jpg')
+    im = cv2.imread(imagem)
     
     k = cv2.waitKey(5) & 0xFF
     if k == 27:

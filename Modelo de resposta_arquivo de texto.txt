@@ -1,0 +1,17 @@
+//comentario (opcional)
+//ordem das linhas nao importa
+
+QR: M#3
+QR: V#6
+QR: P#2
+
+//painel: Ligado/Desligado (na sequencia - esquerda para direita)
+P: LLD
+
+//valvula: Aberta/Fechada
+V: A
+
+//manômetro - em graus ou bar
+M: 5.6 bar
+M: 135 graus
+

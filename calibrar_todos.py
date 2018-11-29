@@ -6,8 +6,10 @@ def nothing(x):
 
 calibrar = 1
 
-frame = cv2.imread('painel1.jpg')
-im = cv2.imread('painel1.jpg')
+imagem = 'equipamento2_0i.jpeg'
+
+frame = cv2.imread(imagem)
+im = cv2.imread(imagem)
 
 a_read = open ('values.txt', 'r')
 texto = a_read.readline()
@@ -73,7 +75,7 @@ while 1:
 
     cv2.imshow('Threshold', threshold)
     cv2.imshow('Painel', im)
-    im = cv2.imread('painel1.jpg')
+    im = cv2.imread(imagem)
     
     k = cv2.waitKey(5) & 0xFF
     if k == 27:

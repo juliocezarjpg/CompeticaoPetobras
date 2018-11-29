@@ -1,13 +1,18 @@
 import cv2
 import numpy as np
 
+#Se pa, indentifica os que nao estao acesos e partir disso,
+#define quais estao acesos. Facilitara em ambiente muito iluminados
+
 def nothing(x):
     pass
 
 calibrar = 1
 
-frame = cv2.imread('painel1.jpg')
-im = cv2.imread('painel1.jpg')
+imagem = 'equipamento2_0.jpeg'
+
+frame = cv2.imread(imagem)
+im = cv2.imread(imagem)
 
 a_read = open ('valuesr.txt', 'r')
 texto = a_read.readline()
@@ -73,7 +78,8 @@ while 1:
 
     cv2.imshow('Threshold', threshold)
     cv2.imshow('Painel', im)
-    im = cv2.imread('painel1.jpg')
+    #cv2.imshow('hsv', hsv)
+    im = cv2.imread(imagem)
     
     k = cv2.waitKey(5) & 0xFF
     if k == 27:

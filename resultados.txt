@@ -1,0 +1,16 @@
+QR: M#5
+QR: P#2
+QR: V#9
+
+P: LDD
+
+V: F
+
+M: 113.37759282303266 graus
+M: 5.878838146379472 bar
+
+Posicao dos nichos (x y):
+
+Nicho 1: (800 2675)
+Nicho 2: (2200 350)
+Nicho 3: (3150 3150)
